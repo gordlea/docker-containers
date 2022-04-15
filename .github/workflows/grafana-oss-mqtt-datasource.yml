@@ -7,7 +7,7 @@ on:
     branches: [  ]
 
 jobs:
-  build-and-publish-grafana-mqtt:
+  grafana-oss-mqtt-datasource:
     env:
       DOCKER_TAG_COMMON: gordlea/grafana-oss-mqtt-datasource
       DOCKER_CONTEXT_PATH: ./images/grafana-oss-mqtt-datasource
