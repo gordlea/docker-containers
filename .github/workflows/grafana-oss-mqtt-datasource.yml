@@ -16,21 +16,21 @@ jobs:
     - uses: actions/checkout@v3
       with:
         fetch-depth: 100
-    - name: Has Changed
+    - name: Look for changes
       id: grafanaossmqtt
       uses: YassinEldeeb/has-changed-path@v2.1
       with:
         paths: ${{ env.DOCKER_CONTEXT_PATH }}
-    - name: Docker Login
+    - name: Login to docker hub
       uses: docker/login-action@v1.14.1
       if: steps.grafanaossmqtt.outputs.changed == 'true' && github.event_name != 'pull_request'
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PAT }}
-    - name: Determine semver image tag
+    - name: Determine new semver
       if: steps.grafanaossmqtt.outputs.changed == 'true'
       run: echo "SEMVER_TAG=$(tac ${DOCKER_CONTEXT_PATH}/Dockerfile | grep -m1 FROM | sed 's/FROM grafana\/grafana-oss://')" >> $GITHUB_ENV
-    - name: Docker meta
+    - name: Generate docker labels and tags
       id: meta
       if: steps.grafanaossmqtt.outputs.changed == 'true' && github.event_name != 'pull_request'
       uses: docker/metadata-action@v3
@@ -48,11 +48,11 @@ jobs:
             org.opencontainers.image.url=https://github.com/gordlea/docker-images/images/grafana-oss-mqtt-datasource
             org.opencontainers.image.url=https://github.com/gordlea/docker-images/images/grafana-oss-mqtt-datasource
 
-    - name: Docker Setup Buildx
+    - name: Setup docker buildx
       if: steps.grafanaossmqtt.outputs.changed == 'true'
       uses: docker/setup-buildx-action@v1.6.0
 
-    - name: Build and push
+    - name: Build and push if main branch
       if: steps.grafanaossmqtt.outputs.changed == 'true'
       uses: docker/build-push-action@v2
       with:
