@@ -35,7 +35,7 @@ jobs:
           ${{ env.DOCKER_TAG_COMMON }}
         # generate Docker tags based on the following events/attributes
         tags: |
-          type=semver,pattern={{version}},value={{ env.SEMVER_TAG }}
+          type=semver,pattern={{version}},value=${{ env.SEMVER_TAG }}
 
     # - name: Docker Setup Buildx
     #   uses: docker/setup-buildx-action@v1.6.0
