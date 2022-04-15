@@ -20,7 +20,7 @@ jobs:
     - name: Determine Image Version
       run: echo "GRAFANA_OSS_VERSION_TAG=$(tac ./Dockerfile | grep -m1 FROM | sed 's/FROM grafana\/grafana-oss://')" >> $GITHUB_ENV
     - name: Show Image Version
-      run: echo "{{ env.GRAFANA_OSS_VERSION_TAG }}"
+      run: echo "$GRAFANA_OSS_VERSION_TAG"
 
     # - name: Build the Docker image
     #   run: |
