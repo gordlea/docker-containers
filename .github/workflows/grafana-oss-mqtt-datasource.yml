@@ -7,7 +7,6 @@ on:
     branches: [  ]
 
 jobs:
-
   build-and-publish-grafana-mqtt:
     env:
       DOCKER_TAG_COMMON: gordlea/grafana-oss-mqtt-datasource
@@ -22,7 +21,6 @@ jobs:
       uses: YassinEldeeb/has-changed-path@v2.1
       with:
         paths: $${{ env.DOCKER_CONTEXT_PATH }}
-
     - name: Docker Login
       uses: docker/login-action@v1.14.1
       if: steps.grafanaossmqtt.outputs.changed == 'true' && github.event_name != 'pull_request'
@@ -30,11 +28,8 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PAT }}
     - name: Determine semver image tag
+      if: steps.grafanaossmqtt.outputs.changed == 'true'
       run: echo "SEMVER_TAG=$(tac ${DOCKER_CONTEXT_PATH}/Dockerfile | grep -m1 FROM | sed 's/FROM grafana\/grafana-oss://')" >> $GITHUB_ENV
-    # - name: Determine Image Version
-    #   run: echo "GRAFANA_OSS_VERSION_TAG=$(tac ./Dockerfile | grep -m1 FROM | sed 's/FROM grafana\/grafana-oss://')" >> $GITHUB_ENV
-    # - name: Show Image Version
-    #   run: echo "$SEMVER_TAG"
     - name: Docker meta
       id: meta
       if: steps.grafanaossmqtt.outputs.changed == 'true' && github.event_name != 'pull_request'
@@ -63,15 +58,5 @@ jobs:
       with:
         context: "${{env.DOCKER_CONTEXT_PATH}}"
         push: ${{ github.event_name != 'pull_request' }}
-        # push: false
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
-    # - name: Build Image
-    #   run: |
-    #     docker build  ${DOCKER_CONTEXT_PATH} \
-    #       --file  ${DOCKER_CONTEXT_PATH}/Dockerfile \
-    #       --tag docker.io/gordlea/grafana-oss-mqtt-datasource:latest
-    # - name: Tag with semver Image
-    #   run: |
-    #     docker tag docker.io/gordlea/grafana-oss-mqtt-datasource:latest \
-    #       docker.io/gordlea/grafana-oss-mqtt-datasource:$SEMVER_TAG
