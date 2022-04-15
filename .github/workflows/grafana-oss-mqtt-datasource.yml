@@ -15,4 +15,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag gordlea/grafana-oss-mqtt-datasource:$(date +%s)
+      run: docker build ./images/grafana-oss-mqtt-datasource --file ./images/grafana-oss-mqtt-datasource/Dockerfile --tag gordlea/grafana-oss-mqtt-datasource:$(date +%s)
