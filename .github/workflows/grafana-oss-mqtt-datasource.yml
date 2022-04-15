@@ -8,7 +8,7 @@ on:
 
 jobs:
 
-  build:
+  build-and-publish-grafana-mqtt:
     env:
       DOCKER_CONTEXT_PATH: ./images/grafana-oss-mqtt-datasource
     runs-on: ubuntu-latest
@@ -19,16 +19,17 @@ jobs:
     #   with:
     #     username: ${{ secrets.DOCKERHUB_USERNAME }}
     #     password: ${{ secrets.DOCKERHUB_PAT }}
-    - name: Determine Image Version
+    - name: Determine semver image tag
       run: echo "SEMVER_TAG=$(tac ${DOCKER_CONTEXT_PATH}/Dockerfile | grep -m1 FROM | sed 's/FROM grafana\/grafana-oss://')" >> $GITHUB_ENV
     # - name: Determine Image Version
     #   run: echo "GRAFANA_OSS_VERSION_TAG=$(tac ./Dockerfile | grep -m1 FROM | sed 's/FROM grafana\/grafana-oss://')" >> $GITHUB_ENV
-    - name: Show Image Version
-      run: echo "$SEMVER_TAG"
+    # - name: Show Image Version
+    #   run: echo "$SEMVER_TAG"
 
-    # - name: Build the Docker image
-    #   run: |
-    #     docker build ./images/grafana-oss-mqtt-datasource \
-    #       --file ./images/grafana-oss-mqtt-datasource/Dockerfile \
-    #       --tag docker.io/gordlea/grafana-oss-mqtt-datasource:latest
-    #     docker tag docker.io/gordlea/grafana-oss-mqtt-datasource:latest docker.io/gordlea/grafana-oss-mqtt-datasource:{{ env.GRAFANA_OSS_VERSION_TAG}}
+    - name: Build Image
+      run: |
+        docker build  ${DOCKER_CONTEXT_PATH} \
+          --file  ${DOCKER_CONTEXT_PATH}/Dockerfile \
+          --tag docker.io/gordlea/grafana-oss-mqtt-datasource:latest
+        docker tag docker.io/gordlea/grafana-oss-mqtt-datasource:latest \
+          docker.io/gordlea/grafana-oss-mqtt-datasource:$SEMVER_TAG
