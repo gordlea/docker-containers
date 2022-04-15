@@ -10,6 +10,7 @@ jobs:
 
   build-and-publish-grafana-mqtt:
     env:
+      DOCKER_TAG_COMMON: gordlea/grafana-oss-mqtt-datasource
       DOCKER_CONTEXT_PATH: ./images/grafana-oss-mqtt-datasource
     runs-on: ubuntu-latest
     steps:
@@ -25,13 +26,32 @@ jobs:
     #   run: echo "GRAFANA_OSS_VERSION_TAG=$(tac ./Dockerfile | grep -m1 FROM | sed 's/FROM grafana\/grafana-oss://')" >> $GITHUB_ENV
     # - name: Show Image Version
     #   run: echo "$SEMVER_TAG"
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v3
+      with:
+        # list of Docker images to use as base name for tags
+        images: |
+          ${{ env.DOCKER_TAG_COMMON }}
+        # generate Docker tags based on the following events/attributes
+        tags: |
+          type=semver,pattern={{version}},value={{ env.SEMVER_TAG }}
 
-    - name: Build Image
-      run: |
-        docker build  ${DOCKER_CONTEXT_PATH} \
-          --file  ${DOCKER_CONTEXT_PATH}/Dockerfile \
-          --tag docker.io/gordlea/grafana-oss-mqtt-datasource:latest
-    - name: Tag with semver Image
-      run: |
-        docker tag docker.io/gordlea/grafana-oss-mqtt-datasource:latest \
-          docker.io/gordlea/grafana-oss-mqtt-datasource:$SEMVER_TAG
+    # - name: Docker Setup Buildx
+    #   uses: docker/setup-buildx-action@v1.6.0
+
+    # - name: Build and push
+    #   uses: docker/build-push-action@v2
+    #   with:
+    #     context: "{{defaultContext}}:mysubdir"
+    #     push: fakse
+    #     tags:
+    # - name: Build Image
+    #   run: |
+    #     docker build  ${DOCKER_CONTEXT_PATH} \
+    #       --file  ${DOCKER_CONTEXT_PATH}/Dockerfile \
+    #       --tag docker.io/gordlea/grafana-oss-mqtt-datasource:latest
+    # - name: Tag with semver Image
+    #   run: |
+    #     docker tag docker.io/gordlea/grafana-oss-mqtt-datasource:latest \
+    #       docker.io/gordlea/grafana-oss-mqtt-datasource:$SEMVER_TAG
