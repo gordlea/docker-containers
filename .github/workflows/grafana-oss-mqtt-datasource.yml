@@ -20,11 +20,11 @@ jobs:
     #     username: ${{ secrets.DOCKERHUB_USERNAME }}
     #     password: ${{ secrets.DOCKERHUB_PAT }}
     - name: Determine Image Version
-      run: tac ${DOCKER_CONTEXT_PATH}/Dockerfile | grep -m1 FROM | sed 's/FROM grafana\/grafana-oss://'
+      run: echo "SEMVER_TAG=$(tac ${DOCKER_CONTEXT_PATH}/Dockerfile | grep -m1 FROM | sed 's/FROM grafana\/grafana-oss://')" >> $GITHUB_ENV
     # - name: Determine Image Version
     #   run: echo "GRAFANA_OSS_VERSION_TAG=$(tac ./Dockerfile | grep -m1 FROM | sed 's/FROM grafana\/grafana-oss://')" >> $GITHUB_ENV
-    # - name: Show Image Version
-    #   run: echo "$GRAFANA_OSS_VERSION_TAG"
+    - name: Show Image Version
+      run: echo "$SEMVER_TAG"
 
     # - name: Build the Docker image
     #   run: |
