@@ -4,15 +4,25 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches: [  ]
 
 jobs:
 
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
+    - name: Docker Login
+      uses: docker/login-action@v1.14.1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PAT }}
+    - name: Set env
+      run: echo "GRAFANA_OSS_VERSION_TAG=$(tac ./Dockerfile | grep -m1 FROM | sed 's/FROM grafana\/grafana-oss://')" >> $GITHUB_ENV
+
     - name: Build the Docker image
-      run: docker build ./images/grafana-oss-mqtt-datasource --file ./images/grafana-oss-mqtt-datasource/Dockerfile --tag gordlea/grafana-oss-mqtt-datasource:$(date +%s)
+      run: |
+        docker build ./images/grafana-oss-mqtt-datasource \
+          --file ./images/grafana-oss-mqtt-datasource/Dockerfile \
+          --tag docker.io/gordlea/grafana-oss-mqtt-datasource:latest
+        docker tag docker.io/gordlea/grafana-oss-mqtt-datasource:latest docker.io/gordlea/grafana-oss-mqtt-datasource:{{ env.GRAFANA_OSS_VERSION_TAG}}
