@@ -31,5 +31,7 @@ jobs:
         docker build  ${DOCKER_CONTEXT_PATH} \
           --file  ${DOCKER_CONTEXT_PATH}/Dockerfile \
           --tag docker.io/gordlea/grafana-oss-mqtt-datasource:latest
+    - name: Tag with semver Image
+      run: |
         docker tag docker.io/gordlea/grafana-oss-mqtt-datasource:latest \
           docker.io/gordlea/grafana-oss-mqtt-datasource:$SEMVER_TAG
