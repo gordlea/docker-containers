@@ -14,6 +14,7 @@ RUN	rm -rf /var/lib/grafana/plugins/mqtt-datasource/node_modules
 
 
 FROM grafana/grafana-oss:8.4.6
-COPY --from=builder /var/lib/grafana/plugins/ /var/lib/grafana/plugins/
-ENV GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=grafana-mqtt-datasource
+COPY --from=builder /var/lib/grafana/plugins /var/lib/grafana_plugins/
+ENV GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=grafana-mqtt-datasource \
+	GF_PATHS_PLUGINS=/var/lib/grafana_plugins/
 
