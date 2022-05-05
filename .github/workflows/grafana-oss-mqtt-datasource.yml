@@ -22,7 +22,7 @@ jobs:
       with:
         paths: ${{ env.DOCKER_CONTEXT_PATH }}
     - name: Login to docker hub
-      uses: docker/login-action@v1.14.1
+      uses: docker/login-action@v2.0.0
       if: steps.grafanaossmqtt.outputs.changed == 'true' && github.event_name != 'pull_request'
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
