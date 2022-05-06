@@ -50,7 +50,7 @@ jobs:
 
     - name: Setup docker buildx
       if: steps.grafanaossmqtt.outputs.changed == 'true'
-      uses: docker/setup-buildx-action@v1.7.0
+      uses: docker/setup-buildx-action@v2.0.0
 
     - name: Build and push if main branch
       if: steps.grafanaossmqtt.outputs.changed == 'true'
