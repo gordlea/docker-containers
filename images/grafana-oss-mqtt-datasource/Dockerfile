@@ -18,3 +18,6 @@ COPY --from=builder /var/lib/grafana/plugins /var/lib/grafana_plugins/
 ENV GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=grafana-mqtt-datasource \
 	GF_PATHS_PLUGINS=/var/lib/grafana_plugins/
 
+USER root
+RUN chown -R grafana /var/lib/grafana_plugins
+USER grafana
