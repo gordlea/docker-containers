@@ -1,4 +1,4 @@
-FROM grafana/grafana-oss:9.0.6 as builder
+FROM grafana/grafana-oss:9.0.7 as builder
 USER root
 RUN apk update && apk add -u nodejs npm bash git yarn go
 ENV PATH="/root/go/bin:${PATH}"
@@ -13,7 +13,7 @@ RUN cd /var/lib/grafana/plugins/ && git clone https://github.com/grafana/mqtt-da
 RUN	rm -rf /var/lib/grafana/plugins/mqtt-datasource/node_modules
 
 
-FROM grafana/grafana-oss:9.0.6
+FROM grafana/grafana-oss:9.0.7
 COPY --from=builder /var/lib/grafana/plugins /var/lib/grafana_plugins/
 ENV GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=grafana-mqtt-datasource \
 	GF_PATHS_PLUGINS=/var/lib/grafana_plugins/
